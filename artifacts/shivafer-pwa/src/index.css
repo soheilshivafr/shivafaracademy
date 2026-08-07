@@ -1,0 +1,1547 @@
+@import "@fontsource-variable/vazirmatn";
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+/* Gold accent — adapts to light/dark system preference */
+:root {
+  --color-gold: #e8b800;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-gold: #c49a00;
+  }
+}
+
+html, body {
+  overscroll-behavior: none;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  forced-color-adjust: none;
+}
+
+#root {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ─── DARK Theme (default) ──────────────────────────────────────────────────── */
+:root, :root.dark {
+  --button-outline: rgba(240,192,64, .12);
+  --badge-outline: rgba(240,192,64, .06);
+  --opaque-button-border-intensity: 8;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(240,192,64, .06);
+
+  /* Background */
+  --background: 30 18% 5%;
+  --foreground: 0 0% 98%;
+
+  /* Borders */
+  --border: 35 15% 12%;
+  --input: 35 15% 12%;
+  --ring: 43 90% 55%;
+
+  /* Cards */
+  --card: 30 18% 7%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 35 18% 14%;
+
+  /* Popover */
+  --popover: 30 18% 7%;
+  --popover-foreground: 0 0% 98%;
+  --popover-border: 35 18% 14%;
+
+  /* Primary: Rich Gold */
+  --primary: 47 88% 52%;
+  --primary-foreground: 30 18% 5%;
+
+  /* Secondary */
+  --secondary: 35 15% 14%;
+  --secondary-foreground: 0 0% 98%;
+
+  /* Muted */
+  --muted: 35 15% 14%;
+  --muted-foreground: 35 8% 62%;
+
+  /* Accent */
+  --accent: 44 84% 44%;
+  --accent-foreground: 30 18% 5%;
+
+  /* Destructive */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Sidebar */
+  --sidebar: 30 18% 5%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-border: 35 15% 12%;
+  --sidebar-primary: 43 90% 55%;
+  --sidebar-primary-foreground: 30 18% 5%;
+  --sidebar-accent: 35 15% 14%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-ring: 43 90% 55%;
+
+  --chart-1: 43 90% 55%;
+  --chart-2: 38 85% 48%;
+  --chart-3: 180 70% 40%;
+  --chart-4: 43 60% 70%;
+  --chart-5: 340 80% 60%;
+
+  --app-font-sans: 'Vazirmatn Variable', 'Vazirmatn', sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.20);
+  --shadow-xs:  0px 2px 0px 0px hsl(0 0% 0% / 0.20);
+  --shadow-sm:  0px 2px 0px 0px hsl(0 0% 0% / 0.20), 0px 1px 2px -1px hsl(0 0% 0% / 0.20);
+  --shadow:     0px 2px 0px 0px hsl(0 0% 0% / 0.20), 0px 1px 2px -1px hsl(0 0% 0% / 0.20);
+  --shadow-md:  0px 2px 0px 0px hsl(0 0% 0% / 0.20), 0px 2px 4px -1px hsl(0 0% 0% / 0.20);
+  --shadow-lg:  0px 2px 0px 0px hsl(0 0% 0% / 0.20), 0px 4px 6px -1px hsl(0 0% 0% / 0.20);
+  --shadow-xl:  0px 2px 0px 0px hsl(0 0% 0% / 0.20), 0px 8px 10px -1px hsl(0 0% 0% / 0.20);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.20);
+
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --sidebar-primary-border: hsl(43 90% 65%);
+  --sidebar-accent-border:  hsl(35 15% 24%);
+  --primary-border:    hsl(43 90% 65%);
+  --secondary-border:  hsl(35 15% 24%);
+  --muted-border:      hsl(35 15% 24%);
+  --accent-border:     hsl(38 85% 58%);
+  --destructive-border:hsl(0 84% 70%);
+
+  /* Body background */
+  --app-body-bg: #08060a;
+
+  /* ── Glass system vars (dark) ── */
+  --glass-header-bg: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(240,192,64,0.025) 60%, rgba(0,0,0,0.15) 100%);
+  --glass-header-border: rgba(255,255,255,0.10);
+  --glass-header-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 1px 0 rgba(240,192,64,0.08), 0 4px 24px rgba(0,0,0,0.4);
+  --glass-drawer-bg: linear-gradient(160deg, rgba(14,10,4,0.97) 0%, rgba(8,6,2,0.97) 100%);
+  --glass-drawer-border: rgba(255,255,255,0.10);
+  --glass-drawer-shadow: inset 1px 0 0 rgba(255,255,255,0.06), -8px 0 40px rgba(0,0,0,0.6);
+  --glass-icon-inactive: rgba(255,255,255,0.4);
+  --glass-item-bg-inactive: rgba(255,255,255,0.05);
+  --glass-item-hover: rgba(255,255,255,0.04);
+  --glass-overlay-bg: rgba(0,0,0,0.65);
+  --glass-text-dim: rgba(255,255,255,0.25);
+  --glass-separator: rgba(255,255,255,0.05);
+  --glass-drawer-header-sep: rgba(240,192,64,0.08);
+  --glass-glow-radial: rgba(240,192,64,0.09);
+  --glass-wallet-bg: rgba(20,14,2,0.72);
+  --glass-wallet-border: rgba(232,184,0,0.35);
+  --glass-selector-bg: rgba(255,255,255,0.06);
+  /* ── Theme-adaptive tokens ── */
+  --logo-blend-mode: screen;
+  --nav-icon-inactive: rgba(255,255,255,0.38);
+  --nav-icon-active: #e8b800;
+  --install-banner-bg: linear-gradient(135deg, #1a0f2e 0%, #0f0820 100%);
+  --install-banner-text: rgba(255,255,255,0.85);
+  --install-banner-close: rgba(255,255,255,0.45);
+  --proactive-bubble-bg: #1a0f2e;
+  --proactive-bubble-border: rgba(255,255,255,0.08);
+  --proactive-bubble-text: rgba(255,255,255,0.90);
+  --proactive-bubble-msg-bg: rgba(255,255,255,0.06);
+  --brand-name-gradient: linear-gradient(135deg, #fef08a 0%, #e8b800 55%, #c49a00 100%);
+  --splash-bg: #06060f;
+  --splash-subtitle: rgba(253,230,138,0.55);
+  --splash-bar-track: rgba(255,255,255,0.06);
+  --landing-page-bg: #08060a;
+  --landing-text: rgba(255,255,255,0.82);
+  --landing-text-dim: rgba(255,255,255,0.60);
+  --landing-section-title: #fffce0;
+  --landing-cta-fade: linear-gradient(0deg, #08060a 55%, rgba(8,6,10,0) 100%);
+  /* ── Card glass / text dim tokens ── */
+  --card-glass-bg: rgba(255,255,255,0.04);
+  --card-glass-border: rgba(255,255,255,0.08);
+  --card-glass-border-gold: rgba(232,184,0,0.4);
+  --card-glass-shadow: 0 2px 16px rgba(0,0,0,.3);
+  --text-on-dark-high: rgba(255,255,255,0.92);
+  --text-on-dark-mid: rgba(255,255,255,0.55);
+  --text-on-dark-low: rgba(255,255,255,0.35);
+  --tag-active-bg: rgba(255,255,255,0.08);
+  --tag-inactive-bg: rgba(255,255,255,0.04);
+  --tag-inactive-color: rgba(255,255,255,0.45);
+  --tag-inactive-border: rgba(255,255,255,0.08);
+  --skeleton-bg: rgba(255,255,255,0.06);
+  --icon-btn-bg: rgba(255,255,255,0.05);
+  --icon-btn-color: rgba(255,255,255,0.35);
+  --nav-active-pill-bg: linear-gradient(160deg, rgba(253,230,138,0.18) 0%, rgba(240,192,64,0.10) 100%);
+  --nav-active-pill-border: rgba(240,192,64,0.25);
+  --nav-active-pill-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 2px 8px rgba(240,192,64,0.15);
+
+  /* ── Channel page tokens (dark) ── */
+  --channel-page-bg: #0d0a14;
+  --channel-composer-bg: rgba(10,7,16,0.97);
+  --channel-composer-border: rgba(255,255,255,0.07);
+  --channel-attach-border: rgba(255,255,255,0.06);
+  --channel-textarea-bg: rgba(255,255,255,0.07);
+  --channel-textarea-border: rgba(255,255,255,0.10);
+  --channel-textarea-text: rgba(255,255,255,0.90);
+  --post-text: rgba(255,255,255,0.90);
+  --post-meta: rgba(255,255,255,0.28);
+  --post-pinned-color: #a78bfa;
+  --post-channel-name: #a78bfa;
+  --post-btn-muted: rgba(255,255,255,0.25);
+
+  /* ── Audio player tokens (dark) ── */
+  --waveform-inactive: rgba(255,255,255,0.10);
+  --speed-btn-bg-inactive: rgba(255,255,255,0.07);
+  --speed-btn-border-inactive: rgba(255,255,255,0.10);
+  --speed-btn-color-inactive: rgba(255,255,255,0.50);
+
+  /* ── Glass card tokens (dark) ── */
+  --glass-card-bg: rgba(255,255,255,0.04);
+  --glass-card-border: rgba(255,255,255,0.10);
+  --glass-card-text: rgba(255,255,255,0.90);
+  --glass-card-text-mid: rgba(255,255,255,0.65);
+  --glass-toggle-bg: rgba(255,255,255,0.07);
+  --glass-toggle-border: rgba(255,255,255,0.12);
+
+  /* ── Score card (income-expense) (dark) ── */
+  --score-card-bg: linear-gradient(135deg, rgba(109,40,217,0.4) 0%, rgba(88,28,135,0.4) 100%);
+  --score-card-border: rgba(139,92,246,0.20);
+  --score-card-icon-bg: rgba(139,92,246,0.20);
+
+  /* ── Nav label color ── */
+  --nav-label-inactive: rgba(255,255,255,0.35);
+  --nav-label-active: #e8b800;
+
+  /* ── New UI component vars (dark) ── */
+  --splash-title-gradient: linear-gradient(135deg, #fde68a 0%, #f0c040 50%, #ca8a04 100%);
+  --course-cover-overlay: linear-gradient(to top, rgba(8,5,18,1) 0%, rgba(8,5,18,0.3) 55%, transparent 100%);
+  --btn-gold-from: rgba(254,240,138,0.97);
+  --btn-gold-mid:  rgba(232,184,0,0.99);
+  --btn-gold-to:   rgba(172,138,0,0.97);
+  --course-desc-fade: linear-gradient(to top, rgba(8,5,20,0.95), transparent);
+  --glass-icon-btn-content: rgba(255,255,255,0.88);
+  --channel-tools-btn-bg: rgba(139,92,246,0.18);
+  --channel-tools-btn-border: rgba(139,92,246,0.35);
+  --channel-tools-btn-icon: #a78bfa;
+  --channel-tools-btn-text: #c4b5fd;
+  --badge-owned-color: #4ade80;
+  --badge-owned-bg: rgba(34,197,94,0.18);
+  --badge-owned-border: rgba(34,197,94,0.3);
+  --badge-owned-btn-bg: linear-gradient(135deg,rgba(34,197,94,0.2),rgba(34,197,94,0.08));
+  --badge-owned-btn-border: rgba(34,197,94,0.35);
+  --badge-course-type-color: #a78bfa;
+  --badge-course-type-bg: rgba(124,58,237,0.20);
+  --badge-course-type-border: rgba(124,58,237,0.30);
+  --sara-card-bg: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.12) 100%);
+  --sara-card-border: rgba(99,102,241,0.3);
+  --sara-card-title: #fff;
+  --sara-card-subtitle: rgba(255,255,255,0.5);
+  --sara-card-accent: #a5b4fc;
+  --wallet-btn-color: #e8b800;
+  --ui-gold: #e8b800;
+  --ui-gold-bg: rgba(232,184,0,0.18);
+  --ui-gold-border: rgba(232,184,0,0.3);
+  --ui-gold-btn-bg: rgba(232,184,0,0.15);
+  --ui-gold-btn-border: rgba(232,184,0,0.45);
+  --ui-gold-count-bg: rgba(232,184,0,0.12);
+  --tribe-guide-btn-bg: rgba(167,139,250,0.12);
+  --tribe-guide-btn-border: rgba(167,139,250,0.3);
+  --tribe-guide-btn-color: rgba(167,139,250,0.9);
+  --channel-bg-blend: normal;
+  --channel-bg-overlay: transparent;
+  --owned-btn-color: #4ade80;
+  --owned-btn-bg: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.1));
+  --owned-btn-border: rgba(34,197,94,0.4);
+  --logo-blend-mode: screen;
+  --brand-name-gradient: linear-gradient(135deg, #fef08a, #e8b800);
+}
+
+/* ─── LIGHT Theme ────────────────────────────────────────────────────────────── */
+:root.light {
+  --button-outline: rgba(200,155,0, .15);
+  --badge-outline: rgba(200,155,0, .08);
+  --opaque-button-border-intensity: 5;
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(200,155,0, .06);
+
+  /* Background */
+  --background: 36 28% 95%;
+  --foreground: 25 35% 7%;
+
+  /* Borders */
+  --border: 35 20% 84%;
+  --input: 35 20% 84%;
+  --ring: 43 88% 40%;
+
+  /* Cards */
+  --card: 0 0% 100%;
+  --card-foreground: 25 35% 7%;
+  --card-border: 0 0% 90%;
+
+  /* Popover */
+  --popover: 0 0% 100%;
+  --popover-foreground: 25 35% 7%;
+  --popover-border: 35 20% 88%;
+
+  /* Primary: Gold — same hue as dark mode, lightness adjusted for contrast */
+  --primary: 43 88% 40%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary */
+  --secondary: 35 22% 90%;
+  --secondary-foreground: 30 25% 10%;
+
+  /* Muted */
+  --muted: 35 22% 90%;
+  --muted-foreground: 35 10% 32%;
+
+  /* Accent */
+  --accent: 44 80% 44%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Destructive */
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 0% 98%;
+
+  /* Sidebar */
+  --sidebar: 42 35% 96%;
+  --sidebar-foreground: 30 25% 10%;
+  --sidebar-border: 35 20% 84%;
+  --sidebar-primary: 43 88% 40%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 35 22% 90%;
+  --sidebar-accent-foreground: 30 25% 10%;
+  --sidebar-ring: 43 88% 40%;
+
+  --chart-1: 43 88% 40%;
+  --chart-2: 38 80% 44%;
+  --chart-3: 180 60% 36%;
+  --chart-4: 43 55% 60%;
+  --chart-5: 340 70% 52%;
+
+  --app-font-sans: 'Vazirmatn Variable', 'Vazirmatn', sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.06);
+  --shadow-xs:  0px 2px 0px 0px hsl(0 0% 0% / 0.06);
+  --shadow-sm:  0px 2px 0px 0px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.06);
+  --shadow:     0px 2px 0px 0px hsl(0 0% 0% / 0.06), 0px 1px 2px -1px hsl(0 0% 0% / 0.06);
+  --shadow-md:  0px 2px 0px 0px hsl(0 0% 0% / 0.06), 0px 2px 4px -1px hsl(0 0% 0% / 0.06);
+  --shadow-lg:  0px 2px 0px 0px hsl(0 0% 0% / 0.06), 0px 4px 6px -1px hsl(0 0% 0% / 0.06);
+  --shadow-xl:  0px 2px 0px 0px hsl(0 0% 0% / 0.06), 0px 8px 10px -1px hsl(0 0% 0% / 0.06);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.06);
+
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --sidebar-primary-border: hsl(43 88% 52%);
+  --sidebar-accent-border:  hsl(35 20% 80%);
+  --primary-border:    hsl(43 95% 42%);
+  --secondary-border:  hsl(35 20% 80%);
+  --muted-border:      hsl(35 20% 80%);
+  --accent-border:     hsl(38 80% 54%);
+  --destructive-border:hsl(0 72% 62%);
+
+  /* Body background */
+  --app-body-bg: #f4f0e8;
+
+  /* ── Glass system vars (light) ── */
+  --glass-header-bg: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(240,192,64,0.03) 60%, rgba(255,255,255,0.75) 100%);
+  --glass-header-border: rgba(0,0,0,0.07);
+  --glass-header-shadow: inset 0 1px 0 rgba(255,255,255,1.0), 0 1px 0 rgba(200,155,0,0.15), 0 4px 24px rgba(0,0,0,0.07);
+  --glass-drawer-bg: linear-gradient(160deg, rgba(255,252,245,0.98) 0%, rgba(255,250,238,0.98) 100%);
+  --glass-drawer-border: rgba(0,0,0,0.08);
+  --glass-drawer-shadow: inset 1px 0 0 rgba(0,0,0,0.04), -8px 0 40px rgba(0,0,0,0.10);
+  --glass-icon-inactive: rgba(0,0,0,0.32);
+  --glass-item-bg-inactive: rgba(0,0,0,0.04);
+  --glass-item-hover: rgba(0,0,0,0.03);
+  --glass-overlay-bg: rgba(0,0,0,0.35);
+  --glass-text-dim: rgba(0,0,0,0.28);
+  --glass-separator: rgba(0,0,0,0.06);
+  --glass-drawer-header-sep: rgba(200,155,0,0.12);
+  --glass-glow-radial: rgba(200,155,0,0.10);
+  --glass-wallet-bg: rgba(255,248,220,0.92);
+  --glass-wallet-border: rgba(180,140,0,0.30);
+  --glass-selector-bg: rgba(0,0,0,0.05);
+  /* ── Theme-adaptive tokens (light) ── */
+  --logo-blend-mode: normal;
+  --nav-icon-inactive: rgba(0,0,0,0.40);
+  --nav-icon-active: hsl(43, 88%, 40%);
+  --install-banner-bg: linear-gradient(135deg, #fffbf0 0%, #fff3d4 100%);
+  --install-banner-text: rgba(0,0,0,0.75);
+  --install-banner-close: rgba(0,0,0,0.40);
+  --proactive-bubble-bg: #ffffff;
+  --proactive-bubble-border: rgba(0,0,0,0.09);
+  --proactive-bubble-text: rgba(0,0,0,0.85);
+  --proactive-bubble-msg-bg: rgba(0,0,0,0.04);
+  --brand-name-gradient: linear-gradient(135deg, #c49a00 0%, #e8b800 55%, #b08800 100%);
+  --splash-bg: #f4f0e8;
+  --splash-subtitle: hsl(35, 50%, 35%);
+  --splash-bar-track: rgba(0,0,0,0.10);
+  --landing-page-bg: hsl(var(--background));
+  --landing-text: rgba(0,0,0,0.78);
+  --landing-text-dim: rgba(0,0,0,0.55);
+  --landing-section-title: hsl(var(--foreground));
+  --landing-cta-fade: linear-gradient(0deg, hsl(var(--background)) 55%, transparent 100%);
+  /* ── Card glass / text dim tokens (light) ── */
+  --card-glass-bg: rgba(0,0,0,0.025);
+  --card-glass-border: rgba(0,0,0,0.07);
+  --card-glass-border-gold: rgba(180,130,0,0.35);
+  --card-glass-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --text-on-dark-high: hsl(var(--foreground));
+  --text-on-dark-mid: hsl(var(--muted-foreground));
+  --text-on-dark-low: rgba(0,0,0,0.38);
+  --tag-active-bg: rgba(0,0,0,0.07);
+  --tag-inactive-bg: rgba(0,0,0,0.03);
+  --tag-inactive-color: rgba(0,0,0,0.50);
+  --tag-inactive-border: rgba(0,0,0,0.07);
+  --skeleton-bg: rgba(0,0,0,0.07);
+  --icon-btn-bg: rgba(0,0,0,0.04);
+  --icon-btn-color: rgba(0,0,0,0.38);
+  --nav-active-pill-bg: linear-gradient(160deg, rgba(196,154,0,0.14) 0%, rgba(232,184,0,0.09) 100%);
+  --nav-active-pill-border: rgba(196,154,0,0.28);
+  --nav-active-pill-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 8px rgba(196,154,0,0.16);
+
+  /* ── Channel page tokens (light) ── */
+  --channel-page-bg: hsl(var(--background));
+  --channel-composer-bg: rgba(255,255,255,0.97);
+  --channel-composer-border: rgba(0,0,0,0.07);
+  --channel-attach-border: rgba(0,0,0,0.05);
+  --channel-textarea-bg: rgba(0,0,0,0.04);
+  --channel-textarea-border: rgba(0,0,0,0.09);
+  --channel-textarea-text: hsl(var(--foreground));
+  --post-text: hsl(var(--foreground));
+  --post-meta: hsl(var(--muted-foreground));
+  --post-pinned-color: hsl(var(--primary));
+  --post-channel-name: hsl(var(--primary));
+  --post-btn-muted: hsl(var(--muted-foreground));
+
+  /* ── Audio player tokens (light) ── */
+  --waveform-inactive: rgba(0,0,0,0.12);
+  --speed-btn-bg-inactive: rgba(0,0,0,0.05);
+  --speed-btn-border-inactive: rgba(0,0,0,0.09);
+  --speed-btn-color-inactive: rgba(0,0,0,0.45);
+
+  /* ── Glass card tokens (light) ── */
+  --glass-card-bg: var(--card-glass-bg);
+  --glass-card-border: var(--card-glass-border);
+  --glass-card-text: hsl(var(--foreground));
+  --glass-card-text-mid: hsl(var(--muted-foreground));
+  --glass-toggle-bg: rgba(0,0,0,0.05);
+  --glass-toggle-border: rgba(0,0,0,0.09);
+
+  /* ── Score card (income-expense) (light) ── */
+  --score-card-bg: linear-gradient(135deg, rgba(109,40,217,0.18) 0%, rgba(91,33,182,0.13) 100%);
+  --score-card-border: rgba(109,40,217,0.18);
+  --score-card-icon-bg: rgba(109,40,217,0.12);
+
+  /* ── Nav label color ── */
+  --nav-label-inactive: hsl(var(--muted-foreground));
+  --nav-label-active: hsl(43, 88%, 40%);
+
+  /* ── New UI component vars (light) ── */
+  --splash-bar-track: rgba(0,0,0,0.18);
+  --splash-title-gradient: linear-gradient(135deg, #c49a00 0%, #e8b800 55%, #b08800 100%);
+  --course-cover-overlay: none;
+  --btn-gold-from: #d4a800;
+  --btn-gold-mid:  #e8b800;
+  --btn-gold-to:   #c49a00;
+  --course-desc-fade: linear-gradient(to top, rgba(245,240,232,0.97), transparent);
+  --glass-icon-btn-content: rgba(30,15,0,0.65);
+  --channel-tools-btn-bg: rgba(109,40,217,0.12);
+  --channel-tools-btn-border: rgba(109,40,217,0.50);
+  --channel-tools-btn-icon: #5b21b6;
+  --channel-tools-btn-text: #6d28d9;
+  --badge-owned-color: #15803d;
+  --badge-owned-bg: rgba(21,128,61,0.14);
+  --badge-owned-border: rgba(21,128,61,0.38);
+  --badge-owned-btn-bg: linear-gradient(135deg,rgba(21,128,61,0.18),rgba(21,128,61,0.08));
+  --badge-owned-btn-border: rgba(21,128,61,0.40);
+  --badge-course-type-color: #6d28d9;
+  --badge-course-type-bg: rgba(109,40,217,0.12);
+  --badge-course-type-border: rgba(109,40,217,0.30);
+  --sara-card-bg: linear-gradient(135deg, rgba(99,102,241,0.22) 0%, rgba(109,40,217,0.16) 100%);
+  --sara-card-border: rgba(99,102,241,0.55);
+  --sara-card-title: #1e1b4b;
+  --sara-card-subtitle: #4b5563;
+  --sara-card-accent: #4338ca;
+  --wallet-btn-color: #92400e;
+  --ui-gold: #92400e;
+  --ui-gold-bg: rgba(146,64,14,0.13);
+  --ui-gold-border: rgba(146,64,14,0.32);
+  --ui-gold-btn-bg: rgba(146,64,14,0.12);
+  --ui-gold-btn-border: rgba(146,64,14,0.42);
+  --ui-gold-count-bg: rgba(146,64,14,0.10);
+  --tribe-guide-btn-bg: rgba(76,29,149,0.10);
+  --tribe-guide-btn-border: rgba(76,29,149,0.40);
+  --tribe-guide-btn-color: #4c1d95;
+  --channel-bg-blend: normal;
+  --channel-bg-overlay: rgba(255,255,255,0.45);
+  --owned-btn-color: #15803d;
+  --owned-btn-bg: linear-gradient(135deg, rgba(21,128,61,0.15), rgba(21,128,61,0.07));
+  --owned-btn-border: rgba(21,128,61,0.45);
+  --logo-blend-mode: multiply;
+  --brand-name-gradient: linear-gradient(135deg, #7a4a00, #a56900);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased text-foreground min-h-[100dvh];
+    background-color: var(--app-body-bg);
+  }
+}
+
+/* ─── iOS 26 Liquid Glass System ─────────────────────────────────────────── */
+
+.glass {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.055) 0%,
+      rgba(240,192,64,0.035) 50%,
+      rgba(255,255,255,0.025) 100%
+    );
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.25),
+    inset 1px 0 0 rgba(255,255,255,0.06),
+    0 8px 32px rgba(0,0,0,0.45),
+    0 2px 8px rgba(0,0,0,0.3);
+}
+
+:root.light .glass {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.80) 0%,
+      rgba(240,192,64,0.04) 50%,
+      rgba(255,255,255,0.65) 100%
+    );
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    inset 0 -1px 0 rgba(0,0,0,0.05),
+    0 4px 20px rgba(0,0,0,0.08),
+    0 1px 4px rgba(0,0,0,0.06);
+}
+
+.glass-card {
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255,255,255,0.06) 0%,
+      rgba(240,192,64,0.04) 40%,
+      rgba(0,0,0,0.15) 100%
+    );
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -1px 0 rgba(0,0,0,0.2),
+    0 4px 24px rgba(0,0,0,0.4),
+    0 1px 4px rgba(0,0,0,0.25);
+}
+
+:root.light .glass-card {
+  background:
+    linear-gradient(
+      150deg,
+      rgba(255,255,255,0.85) 0%,
+      rgba(240,192,64,0.03) 40%,
+      rgba(255,255,255,0.72) 100%
+    );
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    inset 0 -1px 0 rgba(0,0,0,0.04),
+    0 2px 12px rgba(0,0,0,0.07),
+    0 1px 3px rgba(0,0,0,0.05);
+}
+
+.glass-nav {
+  background-color: rgba(10, 10, 20, 0.92);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 18, 35, 0.92) 0%,
+      rgba(12, 11, 22, 0.96) 100%
+    );
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-color: rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 -1px 0 rgba(240,192,64,0.08),
+    0 -8px 32px rgba(0,0,0,0.6);
+}
+
+:root.light .glass-nav {
+  background-color: rgba(255,252,242,0.95);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,252,242,0.95) 0%,
+      rgba(255,250,232,0.97) 100%
+    );
+  border-color: rgba(0,0,0,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 -1px 0 rgba(200,155,0,0.12),
+    0 -4px 20px rgba(0,0,0,0.06);
+}
+
+.glass-input {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+.glass-input:focus {
+  border-color: rgba(240,192,64,0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 0 0 3px rgba(240,192,64,0.12);
+  outline: none;
+}
+
+:root.light .glass-input {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.85),
+    inset 0 -1px 0 rgba(0,0,0,0.04);
+}
+:root.light .glass-input:focus {
+  border-color: rgba(180,140,0,0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 0 0 3px rgba(200,155,0,0.14);
+}
+
+.glass-pill-active {
+  background: linear-gradient(135deg, rgba(240,192,64,0.22), rgba(240,192,64,0.10));
+  border: 1px solid rgba(240,192,64,0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    0 2px 12px rgba(240,192,64,0.15);
+}
+
+@keyframes glass-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.glass-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.08) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: glass-shimmer 4s ease-in-out infinite;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+
+/* ─── Light-mode overrides: Tailwind utilities که روی سفید ناپدید می‌شوند ─── */
+:root.light .bg-white\/5  { background-color: rgba(0,0,0,0.04) !important; }
+:root.light .bg-white\/8  { background-color: rgba(0,0,0,0.05) !important; }
+:root.light .bg-white\/10 { background-color: rgba(0,0,0,0.06) !important; }
+:root.light .bg-white\/15 { background-color: rgba(0,0,0,0.07) !important; }
+:root.light .bg-white\/20 { background-color: rgba(0,0,0,0.08) !important; }
+:root.light .border-white\/10 { border-color: rgba(0,0,0,0.09) !important; }
+:root.light .border-white\/20 { border-color: rgba(0,0,0,0.12) !important; }
+:root.light .text-white\/50  { color: rgba(0,0,0,0.48) !important; }
+:root.light .text-white\/60  { color: rgba(0,0,0,0.55) !important; }
+:root.light .text-white\/70  { color: rgba(0,0,0,0.65) !important; }
+:root.light .text-white\/80  { color: rgba(0,0,0,0.75) !important; }
+:root.light .text-white\/90  { color: rgba(0,0,0,0.82) !important; }
+
+/* ─── Sheet / Channel header vars — defaults dark، override در light ────── */
+:root {
+  --sheet-bg: linear-gradient(160deg, #0f0a1e 0%, #0c0818 100%);
+  --sheet-border: rgba(124,58,237,0.25);
+  --channel-header-bg: rgba(13, 9, 22, 0.72);
+  --channel-header-border: rgba(139,92,246,0.18);
+}
+:root.light {
+  --sheet-bg: linear-gradient(160deg, rgba(255,255,255,0.99) 0%, rgba(252,248,242,0.99) 100%);
+  --sheet-border: rgba(0,0,0,0.08);
+  --channel-header-bg: rgba(255,255,255,0.97);
+  --channel-header-border: rgba(0,0,0,0.09);
+}
+
+
+/* ─── Light-mode nav icon overrides ──────────────────────────────────────── */
+:root.light .text-white {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* bg-black/60 overlay در light mode */
+:root.light .bg-black\/60 { background-color: rgba(0,0,0,0.25) !important; }
+:root.light .bg-black\/70 { background-color: rgba(0,0,0,0.30) !important; }
+
+/* Leaderboard dark bg */
+:root.light .bg-\[\#08060a\] { background-color: hsl(var(--background)) !important; }
+
+::-webkit-scrollbar { display: none; }
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.snap-y-mandatory { scroll-snap-type: y mandatory; }
+.snap-center {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+/* ─── Channel background image — visible in all modes (overlay controls opacity) ─ */
+
+/* ─── Tribe promo banner (Profile page) — always pure white text, ─────────
+   in both Light and Dark theme. Scoped to this banner only; must not
+   inherit the global .text-white -> foreground override above. ─────────── */
+.tribe-banner-text,
+:root.light .tribe-banner-text,
+:root.dark .tribe-banner-text {
+  color: #ffffff !important;
+}
+
+/* ─── Gradient tool cards — keep text white in light mode ────────────────── */
+:root.light [class*="from-primary"] .text-white,
+:root.light [class*="from-violet"] .text-white,
+:root.light [class*="from-emerald"] .text-white,
+:root.light [class*="from-amber"] .text-white,
+:root.light [class*="from-orange"] .text-white,
+:root.light [class*="from-indigo"] .text-white,
+:root.light [class*="from-blue"] .text-white {
+  color: white !important;
+}
+:root.light [class*="from-primary"] .text-white\/70,
+:root.light [class*="from-violet"] .text-white\/70,
+:root.light [class*="from-emerald"] .text-white\/70 {
+  color: rgba(255,255,255,0.7) !important;
+}
+:root.light [class*="from-primary"] .bg-white\/10,
+:root.light [class*="from-primary"] .bg-white\/15,
+:root.light [class*="from-violet"] .bg-white\/10,
+:root.light [class*="from-violet"] .bg-white\/15,
+:root.light [class*="from-emerald"] .bg-white\/10,
+:root.light [class*="from-emerald"] .bg-white\/15 {
+  background-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ─── Score card level text — darker in light mode ────────────────────────── */
+:root.light .score-level-card .text-gray-400   { color: #6b7280 !important; }
+:root.light .score-level-card .text-blue-400   { color: #2563eb !important; }
+:root.light .score-level-card .text-violet-400 { color: #7c3aed !important; }
+:root.light .score-level-card .text-amber-400  { color: #b45309 !important; }
+:root.light .score-level-card .text-emerald-400 { color: #059669 !important; }
+:root.light .score-level-card .text-muted-foreground { color: #6b7280 !important; }
+
+/* ─── Sara call button — light mode ──────────────────────────────────────── */
+:root.light .sara-call-btn {
+  color: #5b21b6 !important;
+  background: rgba(124,58,237,0.12) !important;
+  border-color: rgba(124,58,237,0.5) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 14 — UI & Theme Fixes
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. Score card light mode tokens ─────────────────────────────────── */
+:root.light {
+  --score-card-bg: linear-gradient(135deg, rgba(109,40,217,0.12) 0%, rgba(88,28,135,0.08) 100%);
+  --score-card-border: rgba(139,92,246,0.35);
+  --score-card-icon-bg: rgba(139,92,246,0.15);
+}
+
+/* ─── 2. Dark-surface utility — preserve white text inside dark overlays ── */
+/* AudioPlayer, VideoPlayer, MiniCountdown etc. always have dark backgrounds */
+.dark-surface,
+.dark-surface .text-white\/50,
+.dark-surface .text-white\/60,
+.dark-surface .text-white\/70,
+.dark-surface .text-white\/80 {
+  /* The container signals dark bg — children keep their white colors */
+}
+:root.light .dark-surface .text-white {
+  color: white !important;
+}
+:root.light .dark-surface .text-white\/50 {
+  color: rgba(255,255,255,0.50) !important;
+}
+:root.light .dark-surface .text-white\/60 {
+  color: rgba(255,255,255,0.60) !important;
+}
+:root.light .dark-surface .text-white\/70 {
+  color: rgba(255,255,255,0.70) !important;
+}
+:root.light .dark-surface .text-white\/80 {
+  color: rgba(255,255,255,0.80) !important;
+}
+:root.light .dark-surface .text-white\/90 {
+  color: rgba(255,255,255,0.90) !important;
+}
+
+/* ─── FIX v20 — Product detail light mode: owned button + section titles ── */
+/* "شما این محصول رو دارین" — سبز روشن روی پس‌زمینه روشن ناخوانا بود */
+:root.light .product-owned-btn {
+  background: linear-gradient(135deg, rgba(21,128,61,0.16), rgba(21,128,61,0.08)) !important;
+  border-color: rgba(21,128,61,0.50) !important;
+  color: #15803d !important;
+}
+:root.light .product-owned-btn svg {
+  color: #15803d !important;
+  stroke: #15803d !important;
+}
+
+/* ─── 3. Purple & Gold colored buttons — keep text/icons white ─────────── */
+/* These buttons have inline dark background styles so text must stay white */
+:root.light .btn-purple,
+:root.light .btn-purple .text-white,
+:root.light .btn-gold,
+:root.light .btn-gold .text-white {
+  color: white !important;
+}
+
+/* Target buttons with violet/purple background classes */
+:root.light .bg-violet-600 .text-white,
+:root.light .bg-violet-600,
+:root.light .bg-violet-500 .text-white,
+:root.light .bg-purple-600 .text-white {
+  color: white !important;
+}
+
+/* ─── 4. MiniCountdown timer — always white text on red/orange gradient ─── */
+:root.light .countdown-chip {
+  color: white !important;
+}
+
+/* ─── 5. Store page (products.tsx) — light mode card & text overrides ───── */
+:root.light .store-card {
+  background: var(--color-card) !important;
+  border-color: var(--color-card-border) !important;
+}
+:root.light .store-card-title {
+  color: var(--color-card-foreground) !important;
+}
+:root.light .store-section-header-title {
+  color: var(--color-foreground) !important;
+}
+:root.light .store-tab-inactive {
+  background: rgba(0,0,0,0.04) !important;
+  color: rgba(0,0,0,0.50) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+:root.light .store-image-placeholder {
+  background: rgba(0,0,0,0.04) !important;
+}
+
+/* ─── 6. Product-detail page — light mode ───────────────────────────────── */
+:root.light .product-detail-bg {
+  background: var(--app-body-bg) !important;
+}
+
+/* ─── 7. Global: prevent horizontal overflow everywhere ─────────────────── */
+body {
+  overflow-x: hidden !important;
+}
+.page-root,
+.page-container {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ─── 8. Hana task list — no horizontal scroll ──────────────────────────── */
+:root .task-list-container {
+  overflow-x: hidden !important;
+  max-width: 100%;
+}
+.task-card {
+  max-width: 100%;
+  word-break: break-word;
+}
+
+/* ─── 9. Score level card text — light mode ─────────────────────────────── */
+:root.light .score-level-card p.font-black {
+  color: #5b21b6;
+}
+
+/* ─── 10. bg-white overrides for store cards in light mode ──────────────── */
+:root.light .bg-white\/4 { background-color: rgba(0,0,0,0.03) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 15 — UI/Theme Fixes
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── GOLD BRAND TOKENS (Dark + Light shared) ─────────────────────────── */
+:root {
+  --gold-primary: #e8b800;
+  --gold-gradient: linear-gradient(135deg, #c89c1a 0%, #e8b800 60%, #a87c10 100%);
+  --gold-glow: rgba(232,184,0,0.40);
+  --gold-border: rgba(232,184,0,0.35);
+  --gold-bg: rgba(232,184,0,0.12);
+  --gold-text: #3a2600;
+
+  /* Landing shell tokens (dark default) */
+  --landing-bg: #08060a;
+  --landing-header-bg: rgba(8,6,10,0.88);
+  --landing-header-border: rgba(255,218,100,0.14);
+  --landing-cta-overlay: linear-gradient(0deg, #08060a 55%, rgba(8,6,10,0) 100%);
+  --landing-glass-bg: linear-gradient(135deg,rgba(255,218,100,0.12) 0%,rgba(175,115,0,0.05) 50%,rgba(255,218,100,0.09) 100%);
+  --landing-glass-border: rgba(255,218,100,0.30);
+  --landing-glass-shadow: inset 0 1.5px 0 rgba(255,252,200,0.18), inset 0 -1px 0 rgba(0,0,0,0.30), 0 4px 20px rgba(0,0,0,0.48);
+  --landing-text-hi: var(--color-foreground);
+  --landing-text-dim: rgba(244,204,68,0.55);
+  --landing-text-body: color-mix(in srgb, var(--color-foreground) 82%, transparent);
+  --landing-error-text: rgba(255,255,255,0.6);
+
+  /* Chat page tokens (dark default) */
+  --chat-bg: #08060a;
+  --chat-header-bg: linear-gradient(to bottom, rgba(20,14,28,0.98) 0%, rgba(12,8,18,0.95) 100%);
+  --chat-header-border: rgba(255,255,255,0.08);
+  --chat-title-color: rgba(255,255,255,1);
+  --chat-msg-bg: rgba(255,255,255,0.08);
+  --chat-msg-color: rgba(255,255,255,0.9);
+  --chat-msg-border: rgba(255,255,255,0.10);
+  --chat-input-bg: rgba(255,255,255,0.07);
+  --chat-input-border: rgba(255,255,255,0.10);
+  --chat-input-color: rgba(255,255,255,1);
+  --chat-input-placeholder: rgba(255,255,255,0.4);
+  --chat-footer-bg: rgba(12,8,18,0.97);
+  --chat-footer-border: rgba(255,255,255,0.08);
+  --chat-agent-name-color: rgba(255,255,255,0.45);
+  --chat-time-user: rgba(255,255,255,0.5);
+  --chat-time-agent: rgba(255,255,255,0.3);
+  --chat-back-btn-bg: rgba(255,255,255,0.07);
+  --chat-back-btn-color: rgba(255,255,255,0.6);
+  --chat-online-dot-border: #08060a;
+  --chat-loading-bg: #08060a;
+
+  /* Advisor page tokens (dark default) */
+  --advisor-bg: #08060a;
+  --advisor-btn-back-bg: rgba(255,255,255,0.07);
+  --advisor-btn-back-border: rgba(255,255,255,0.10);
+  --advisor-btn-back-color: rgba(255,255,255,0.7);
+  --advisor-title-color: rgba(255,255,255,0.35);
+  --advisor-online-border: #08060a;
+
+  /* Score card light mode improvements */
+  --score-card-bg: linear-gradient(135deg, rgba(109,40,217,0.4) 0%, rgba(88,28,135,0.4) 100%);
+  --score-card-border: rgba(139,92,246,0.20);
+  --score-card-icon-bg: rgba(139,92,246,0.20);
+  --score-card-label-color: rgba(255,255,255,0.6);
+  --score-card-level-color: #c4b5fd;
+  --score-card-score-color: rgba(255,255,255,0.5);
+  --score-card-next-color: #a78bfa;
+}
+
+:root.light {
+  /* Landing shell — light mode */
+  --landing-bg: var(--app-body-bg);
+  --landing-header-bg: rgba(244,240,232,0.94);
+  --landing-header-border: rgba(200,156,26,0.28);
+  --landing-cta-overlay: linear-gradient(0deg, var(--app-body-bg) 55%, transparent 100%);
+  --landing-glass-bg: rgba(255,255,255,0.80);
+  --landing-glass-border: rgba(200,156,26,0.32);
+  --landing-glass-shadow: 0 2px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(200,156,26,0.14), inset 0 1px 0 rgba(255,255,255,0.9);
+  --landing-text-hi: #1a1200;
+  --landing-text-dim: rgba(150,100,0,0.60);
+  --landing-text-body: color-mix(in srgb, var(--color-foreground) 88%, transparent);
+  --landing-error-text: var(--color-muted-foreground);
+
+  /* Chat page — light mode */
+  --chat-bg: var(--app-body-bg);
+  --chat-header-bg: rgba(244,240,232,0.96);
+  --chat-header-border: rgba(0,0,0,0.08);
+  --chat-title-color: hsl(var(--foreground));
+  --chat-msg-bg: rgba(0,0,0,0.04);
+  --chat-msg-color: hsl(var(--foreground));
+  --chat-msg-border: rgba(0,0,0,0.08);
+  --chat-input-bg: rgba(255,255,255,0.90);
+  --chat-input-border: rgba(0,0,0,0.12);
+  --chat-input-color: hsl(var(--foreground));
+  --chat-input-placeholder: rgba(0,0,0,0.40);
+  --chat-footer-bg: rgba(244,240,232,0.97);
+  --chat-footer-border: rgba(0,0,0,0.08);
+  --chat-agent-name-color: rgba(0,0,0,0.45);
+  --chat-time-user: rgba(255,255,255,0.6);
+  --chat-time-agent: rgba(0,0,0,0.35);
+  --chat-back-btn-bg: rgba(0,0,0,0.06);
+  --chat-back-btn-color: rgba(0,0,0,0.60);
+  --chat-online-dot-border: var(--app-body-bg);
+  --chat-loading-bg: var(--app-body-bg);
+
+  /* Advisor — light mode */
+  --advisor-bg: var(--app-body-bg);
+  --advisor-btn-back-bg: rgba(0,0,0,0.06);
+  --advisor-btn-back-border: rgba(0,0,0,0.10);
+  --advisor-btn-back-color: rgba(0,0,0,0.60);
+  --advisor-title-color: rgba(0,0,0,0.45);
+  --advisor-online-border: var(--app-body-bg);
+
+  /* Score card — premium light mode */
+  --score-card-bg: linear-gradient(135deg, #f5f0ff 0%, #ede8fb 100%);
+  --score-card-border: rgba(139,92,246,0.30);
+  --score-card-icon-bg: rgba(139,92,246,0.12);
+  --score-card-label-color: rgba(88,28,135,0.65);
+  --score-card-level-color: #5b21b6;
+  --score-card-score-color: rgba(88,28,135,0.55);
+  --score-card-next-color: #7c3aed;
+}
+
+/* ─── Score card light mode typography ───────────────────────────────── */
+.score-level-card p.text-xs.text-muted-foreground:first-of-type {
+  color: var(--score-card-label-color) !important;
+}
+.score-level-card .font-black.text-lg {
+  color: var(--score-card-level-color) !important;
+}
+.score-level-card p.text-xs.text-muted-foreground:last-of-type {
+  color: var(--score-card-score-color) !important;
+}
+.score-level-card .text-violet-400 {
+  color: var(--score-card-next-color) !important;
+}
+:root.light .score-level-card .text-yellow-400 {
+  color: #a16207 !important;
+  filter: drop-shadow(0 0 4px rgba(161,98,7,0.3));
+}
+
+/* ─── Store page section header — Light Theme ────────────────────────── */
+:root.light .store-section-title {
+  color: var(--color-foreground) !important;
+}
+:root.light .store-cat-count-badge {
+  background: rgba(0,0,0,0.06) !important;
+  color: var(--color-muted-foreground) !important;
+}
+:root.light .store-view-all-btn {
+  color: var(--color-primary) !important;
+}
+:root.light .store-cat-tab {
+  color: var(--color-muted-foreground) !important;
+}
+:root.light .store-cat-tab-active {
+  color: var(--color-foreground) !important;
+}
+
+/* ─── Horizontal scroll prevention (global) ─────────────────────────── */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+}
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ─── Gold brand utility classes ─────────────────────────────────────── */
+.btn-gold-brand {
+  background: var(--gold-gradient) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 20px var(--gold-glow) !important;
+}
+.badge-gold-brand {
+  background: var(--gold-gradient) !important;
+  color: #3a2600 !important;
+  border: 1px solid var(--gold-border) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 16 — UI/Theme Fixes
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── 10. Advisor connected/dialing screen — dark default ────────────── */
+:root {
+  --advisor-connected-subtitle: rgba(255,255,255,0.45);
+  --advisor-connected-status: rgba(255,255,255,0.6);
+  --advisor-connected-sending-wait: rgba(255,255,255,0.55);
+  --advisor-connected-transcript-bg: rgba(255,255,255,0.05);
+  --advisor-connected-transcript-border: rgba(255,255,255,0.08);
+  --advisor-connected-transcript-text: rgba(255,255,255,0.85);
+  --advisor-connected-mute-bg: rgba(255,255,255,0.08);
+  --advisor-connected-mute-border: rgba(255,255,255,0.15);
+  --advisor-connected-mute-icon: rgba(255,255,255,0.85);
+  --advisor-connected-label: rgba(255,255,255,0.45);
+  --advisor-ended-circle-bg: rgba(255,255,255,0.06);
+  --advisor-ended-circle-border: rgba(255,255,255,0.10);
+  --advisor-ended-icon: rgba(255,255,255,0.30);
+  --advisor-ended-text: rgba(255,255,255,0.40);
+  --advisor-cooldown-bg: rgba(245,158,11,0.08);
+  --advisor-cooldown-border: rgba(245,158,11,0.22);
+  --advisor-cooldown-text: rgba(255,255,255,0.78);
+  --advisor-glow-idle: rgba(99,102,241,0.18);
+  --advisor-glow-secondary: rgba(139,92,246,0.07);
+
+  /* ── Input Action Button (send / voice / search / FAB / float chat) ── */
+  --input-action-btn-bg: var(--gold-gradient);
+  --input-action-btn-bg-disabled: rgba(255,255,255,0.07);
+  --input-action-btn-icon: #ffffff;
+}
+
+/* ─── Advisor connected/dialing screen — light mode overrides ─────────── */
+:root.light {
+  --advisor-connected-subtitle: rgba(0,0,0,0.50);
+  --advisor-connected-status: rgba(0,0,0,0.55);
+  --advisor-connected-sending-wait: rgba(0,0,0,0.45);
+  --advisor-connected-transcript-bg: rgba(0,0,0,0.04);
+  --advisor-connected-transcript-border: rgba(0,0,0,0.09);
+  --advisor-connected-transcript-text: hsl(var(--foreground));
+  --advisor-connected-mute-bg: rgba(0,0,0,0.06);
+  --advisor-connected-mute-border: rgba(0,0,0,0.12);
+  --advisor-connected-mute-icon: rgba(0,0,0,0.65);
+  --advisor-connected-label: rgba(0,0,0,0.50);
+  --advisor-ended-circle-bg: rgba(0,0,0,0.05);
+  --advisor-ended-circle-border: rgba(0,0,0,0.10);
+  --advisor-ended-icon: rgba(0,0,0,0.30);
+  --advisor-ended-text: rgba(0,0,0,0.45);
+  --advisor-cooldown-bg: rgba(180,100,0,0.08);
+  --advisor-cooldown-border: rgba(180,100,0,0.22);
+  --advisor-cooldown-text: hsl(var(--foreground));
+  --advisor-glow-idle: rgba(99,102,241,0.10);
+  --advisor-glow-secondary: rgba(139,92,246,0.04);
+
+  /* ── Input Action Button — light mode: always brand-colored ─────────── */
+  --input-action-btn-bg: var(--gold-gradient);
+}
+
+/* ─── Send / Input action button — always brand-colored, opacity dims when disabled ─── */
+
+/* ─── Advisor tips overlay — always dark screen ──────────────────────── */
+/* Tips cards use a forced dark background, so keep white text there      */
+.advisor-tips-screen,
+.advisor-tips-screen .text-white {
+  color: white;
+}
+:root.light .advisor-tips-screen {
+  color: white !important;
+}
+:root.light .advisor-tips-screen .text-white {
+  color: white !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 18 — Light Mode + Chatbot + Wizard + Deploy
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Fix #1 — Gold contrast tokens for Light Mode ──────────────────── */
+:root {
+  --gold-light-text:   #7a4400;
+  --gold-light-border: rgba(120,70,0,0.40);
+  --gold-light-icon:   #7a4400;
+  --gold-light-accent: #6b3c00;
+  --primary-button-text: #ffffff;
+}
+
+/* Override --gold-primary in light to darker amber for readable text/icons */
+:root.light {
+  --gold-primary: #8a5200;
+  --gold-glow:    rgba(138,82,0,0.22);
+  --gold-border:  rgba(138,82,0,0.38);
+  --gold-bg:      rgba(138,82,0,0.10);
+}
+
+/* Gold text elements in light mode — use deep amber.
+   NOTE: must match only when --gold-primary is used as the *text* color,
+   never when it's used as a background (e.g. filled category chips like
+   "دوره‌ها"), otherwise this silently overrides intentional white text
+   on a brown/gold background and produces unreadable brown-on-brown text. */
+:root.light [style*="color: var(--gold-primary)"],
+:root.light [style*="color:var(--gold-primary)"],
+:root.light .text-gold-primary {
+  color: var(--gold-light-text) !important;
+}
+
+/* Gold badge/count/tab elements in light mode */
+:root.light [style*="var(--ui-gold)"] {
+  color: var(--gold-light-text) !important;
+}
+
+/* ─── Fix #2 — Product price card — text contrast in Light Mode ──────── */
+:root.light .product-price-card [class~="text-white/55"],
+:root.light .product-price-card [class~="text-white/35"],
+:root.light .product-price-card [class~="text-white/45"],
+:root.light .product-price-card [class~="text-white/40"],
+:root.light .product-price-card [class~="text-white/50"] {
+  color: rgba(30,15,0,0.70) !important;
+}
+/* Discount price/countdown: replace red-400 (too light) with darker red */
+:root.light .product-price-card .text-red-400 {
+  color: #b91c1c !important;
+  text-shadow: none !important;
+}
+/* Badge inside discount card */
+:root.light .product-price-card [style*="color: \"#fca5a5\""],
+:root.light .product-price-card span[style*="#fca5a5"] {
+  color: #991b1b !important;
+}
+
+/* ─── Fix #5 — Purple/violet primary buttons — always white text+icon ── */
+
+/* Class-based violet/purple buttons */
+:root.light button[class*="bg-violet"],
+:root.light button[class*="bg-purple"],
+:root.light button[class*="from-violet"],
+:root.light button[class*="from-purple"] {
+  color: var(--primary-button-text) !important;
+}
+:root.light button[class*="bg-violet"] svg,
+:root.light button[class*="bg-purple"] svg,
+:root.light button[class*="from-violet"] svg,
+:root.light button[class*="from-purple"] svg {
+  color: var(--primary-button-text) !important;
+  stroke: var(--primary-button-text) !important;
+}
+/* Tab buttons bg-violet-600 in assistant-chat */
+:root.light .bg-violet-600 {
+  color: var(--primary-button-text) !important;
+}
+:root.light .bg-violet-600 svg {
+  color: var(--primary-button-text) !important;
+  stroke: var(--primary-button-text) !important;
+}
+/* Chat send button with inline violet gradient */
+:root.light button[style*="7c3aed"],
+:root.light button[style*="4f46e5"],
+:root.light button[style*="violet"],
+:root.light button[style*="purple"] {
+  color: var(--primary-button-text) !important;
+}
+:root.light button[style*="7c3aed"] svg,
+:root.light button[style*="4f46e5"] svg {
+  color: var(--primary-button-text) !important;
+  stroke: var(--primary-button-text) !important;
+}
+/* Quick-action badges in assistant-chat */
+:root.light .bg-green-600,
+:root.light .bg-blue-600,
+:root.light .bg-yellow-600 {
+  color: var(--primary-button-text) !important;
+}
+
+/* ─── Fix #7 — Symlink safety documented in DEPLOY.md ───────────────── */
+/* Build process: never copy /admin inside pwa output.
+   rsync command must use --exclude=admin when deploying PWA.
+   See DEPLOY.md for full deploy instructions. */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 19 PART 1 — Core UI Fixes
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── FIX #1 — Gold/Yellow readability: catch-all for remaining #e8b800 ─── */
+
+/* Any element still using inline color:#e8b800 gets overridden in light */
+:root.light [style*="color: #e8b800"],
+:root.light [style*="color:#e8b800"] {
+  color: var(--gold-primary) !important;
+}
+
+/* Any element still using inline background with rgba(232,184,0,0.18) */
+:root.light [style*="rgba(232,184,0, 0.18)"],
+:root.light [style*="rgba(232,184,0,0.18)"] {
+  background: rgba(138,82,0,0.13) !important;
+}
+
+/* Course type badge — "دوره آموزشی"
+   Color intentionally omitted: the component sets its own inline color
+   (white on a solid brown fill in light theme) — forcing color here
+   produced brown-on-brown text. */
+:root.light .course-type-badge {
+  border-color: rgba(138,82,0,0.38) !important;
+}
+
+/* Section header count badges (e.g. "همه 8") */
+:root.light .store-count-badge {
+  background: rgba(138,82,0,0.10) !important;
+  color: var(--gold-primary) !important;
+}
+
+/* "مشاهده همه" button in section headers */
+:root.light .store-view-all-btn-gold {
+  background: rgba(138,82,0,0.10) !important;
+  color: var(--gold-primary) !important;
+  border-color: rgba(138,82,0,0.25) !important;
+}
+
+/* Category icon containers (courses section gold icon) */
+:root.light .courses-section-icon {
+  background: rgba(138,82,0,0.10) !important;
+  border-color: rgba(138,82,0,0.30) !important;
+  color: var(--gold-primary) !important;
+}
+
+/* Gold price text on product/course cards */
+:root.light .gold-price-text {
+  color: var(--gold-primary) !important;
+}
+
+/* "ثبت‌نام" and similar gold CTA buttons on cards */
+:root.light .enroll-btn-gold {
+  background: rgba(138,82,0,0.12) !important;
+  color: var(--gold-primary) !important;
+  border-color: rgba(138,82,0,0.35) !important;
+}
+
+/* Gold card borders (hasDiscount) */
+:root.light [style*="rgba(232,184,0, 0.4)"],
+:root.light [style*="rgba(232,184,0,0.4)"] {
+  border-color: rgba(138,82,0,0.38) !important;
+}
+
+/* ─── FIX #2 — Product cover: remove any residual filter/brightness ─── */
+:root.light .product-cover-img {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* ─── FIX #3 — Discount badge improvements in Light Mode ─────────────── */
+/* Discount % badge (animated) — gold gradient, white text, stronger border */
+:root.light .discount-badge-pill {
+  border: 1.5px solid rgba(120,70,0,0.42) !important;
+  box-shadow: 0 2px 8px rgba(120,70,0,0.25) !important;
+}
+
+/* Fallback: any element with gold-gradient background + white text */
+:root.light [style*="gold-gradient"] {
+  border: 1.5px solid rgba(120,70,0,0.38) !important;
+}
+
+/* ─── FIX #4 — Product detail page light mode improvements ─────────────── */
+
+/* Header back button */
+:root.light .product-detail-back-btn {
+  background: var(--icon-btn-bg) !important;
+  border-color: var(--card-glass-border) !important;
+}
+:root.light .product-detail-back-btn svg {
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Price section label in product detail */
+:root.light .product-price-label {
+  color: var(--color-muted-foreground) !important;
+}
+
+/* Gold icon boxes in product detail */
+:root.light [style*="rgba(232,184"] .product-detail-icon-box {
+  background: rgba(138,82,0,0.12) !important;
+}
+
+/* ─── FIX #4 — Tab badge count in active state ──────────────────────── */
+:root.light button[style*="color: var(--gold-primary)"] .tab-count-badge {
+  background: rgba(138,82,0,0.15) !important;
+}
+
+/* ─── Global: any text that uses --ui-gold ── */
+:root.light [style*="var(--ui-gold)"] {
+  color: var(--gold-primary) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VERSION 24 — iOS Zoom Fix + Task Card Light Mode
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. Prevent iOS auto-zoom on input focus ───────────────────────────── */
+/* iOS zooms into any input with font-size < 16px. Fix: enforce 16px minimum. */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+/* Restore visual size with transform so 16px renders like 14px (text-sm) */
+/* We let font-size be 16px but the visual appearance stays compact via the
+   existing padding/line-height. No transform trick needed — 16px is fine. */
+
+/* ─── 2. Task Card – light mode improvements ────────────────────────────── */
+
+/* Card base: white background with shadow on light theme */
+:root.light .task-card-wrap {
+  background: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+:root.light .task-card-wrap.task-card-past {
+  background: #fff5f5 !important;
+  border-color: rgba(239,68,68,0.22) !important;
+}
+:root.light .task-card-wrap.task-card-done {
+  background: rgba(0,0,0,0.02) !important;
+}
+
+/* Task title — always dark on light theme */
+:root.light .task-card-title {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Violet-colored elements in task cards — darken on light */
+:root.light .task-action-violet {
+  color: #5b21b6 !important;
+}
+:root.light .task-action-blue {
+  color: #1d4ed8 !important;
+}
+:root.light .task-action-green {
+  color: #15803d !important;
+}
+:root.light .task-action-red {
+  color: #b91c1c !important;
+}
+
+/* Reschedule button row — solid in both light and dark themes */
+.task-reschedule-today    { background: #10b981 !important; color: #ffffff !important; border-color: transparent !important; }
+.task-reschedule-tomorrow { background: #3b82f6 !important; color: #ffffff !important; border-color: transparent !important; }
+.task-reschedule-next-week{ background: #7c3aed !important; color: #ffffff !important; border-color: transparent !important; }
+
+/* DuePicker time-slot buttons — solid in both themes */
+.due-time-slot-btn {
+  background-color: #6d28d9 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+:root.light .due-time-slot-btn {
+  background-color: #7c3aed !important;
+  color: #ffffff !important;
+}
+/* DuePicker date header — solid in both themes */
+.due-date-header {
+  background-color: #6d28d9 !important;
+  color: #ffffff !important;
+}
+:root.light .due-date-header {
+  background-color: #7c3aed !important;
+  color: #ffffff !important;
+}
+/* DuePicker time input — solid in both themes */
+.due-time-input {
+  background-color: #6d28d9 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+:root.light .due-time-input {
+  background-color: #7c3aed !important;
+  color: #ffffff !important;
+}
+
+/* Due-date chip colors */
+:root.light .task-due-future {
+  color: #5b21b6 !important;
+  border-color: rgba(91,33,182,0.25) !important;
+  background: rgba(91,33,182,0.08) !important;
+}
+
+/* "کار جدید اضافه کنید" dashed button */
+:root.light .task-add-btn {
+  color: #4c1d95 !important;
+  border-color: rgba(109,40,217,0.45) !important;
+}
+:root.light .task-add-btn:hover {
+  background: rgba(109,40,217,0.06) !important;
+}
+
+/* ─── Smart Analysis Card — light mode: پس‌زمینه تیره برای خوانایی متن سفید ── */
+:root.light .smart-analysis-card {
+  background: linear-gradient(135deg, rgba(67,56,202,0.88) 0%, rgba(124,58,237,0.84) 40%, rgba(37,99,235,0.82) 100%) !important;
+  border-color: rgba(139,92,246,0.55) !important;
+  box-shadow: 0 8px 32px rgba(67,56,202,0.30), 0 1px 0 rgba(255,255,255,0.18) inset !important;
+}
+/* متن‌های داخل کارت همیشه سفید بمانند */
+:root.light .smart-analysis-card p,
+:root.light .smart-analysis-card span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  filter: none !important;
+}
+/* قاب هر پیام در light mode کمی روشن‌تر */
+:root.light .smart-analysis-msg-row {
+  background: rgba(255,255,255,0.12) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}

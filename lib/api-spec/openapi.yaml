@@ -1,0 +1,2514 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Shivafer Academy API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: openai
+    description: OpenAI AI chat, image, and audio operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User profile operations
+  - name: courses
+    description: Course operations
+  - name: products
+    description: Product operations
+  - name: reels
+    description: Reel video operations
+  - name: admin
+    description: Admin panel operations
+  - name: payment
+    description: Zarinpal payment operations
+  - name: channel
+    description: Channel post operations
+  - name: assessments
+    description: Tests, assessments, and dynamic recommendations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /assessments/recommendations/{sessionId}:
+    get:
+      operationId: getAssessmentRecommendations
+      tags: [assessments]
+      summary: Get dynamic recommendations for a completed assessment
+      description: >
+        Returns recommendations produced only by matched active Rules Engine
+        rules. If no rule matches, recommendations is an empty array. No
+        fallback or hard-coded catalog item is returned.
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dynamic recommendations ordered by priority
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssessmentRecommendationsResponse"
+        "400":
+          description: Invalid session id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Completed result not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /assessments/{id}/professional-report/config:
+    get:
+      operationId: getProfessionalReportConfig
+      tags: [assessments]
+      summary: Get professional report sales configuration for an assessment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Professional report configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportConfigPublic"
+        "404":
+          description: Assessment not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /assessments/professional-report/preview/{sessionId}:
+    get:
+      operationId: getProfessionalReportPreview
+      tags: [assessments]
+      summary: Get a deterministic rule-based professional report preview
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Rule-based preview; no AI call is performed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportPreviewResponse"
+        "404":
+          description: Completed assessment result not found
+
+  /assessments/professional-report/{sessionId}:
+    get:
+      operationId: getStoredProfessionalReport
+      tags: [assessments]
+      summary: Get the stored professional report for the authenticated owner
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Stored report record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportRecord"
+        "404":
+          description: Report not found
+
+  /admin/assessments/{id}/professional-report-config:
+    get:
+      operationId: getAdminProfessionalReportConfig
+      tags: [admin]
+      summary: Get complete professional report configuration
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Complete configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportConfig"
+
+    put:
+      operationId: updateAdminProfessionalReportConfig
+      tags: [admin]
+      summary: Update professional report configuration without generating a report
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfessionalReportConfigInput"
+      responses:
+        "200":
+          description: Saved configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportConfig"
+
+  /admin/assessments/professional-report/prompt:
+    post:
+      operationId: buildProfessionalReportPrompt
+      tags: [admin]
+      summary: Build an immutable-data prompt and rule-based preview without an AI call
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfessionalReportPromptInput"
+      responses:
+        "200":
+          description: Prompt package and deterministic preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfessionalReportPromptResponse"
+
+  # ─── Auth ───────────────────────────────────────────────
+  /auth/send-otp:
+    post:
+      operationId: sendOtp
+      tags: [auth]
+      summary: Send OTP code to phone number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendOtpRequest"
+      responses:
+        "200":
+          description: OTP sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid phone number
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/verify-otp:
+    post:
+      operationId: verifyOtp
+      tags: [auth]
+      summary: Verify OTP and get JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyOtpRequest"
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "400":
+          description: Invalid or expired OTP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/profile:
+    put:
+      operationId: updateProfile
+      tags: [users]
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── User courses & products ─────────────────────────────
+  /user/courses:
+    get:
+      operationId: getUserCourses
+      tags: [users]
+      summary: Get current user's purchased courses
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of user courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+
+  /user/products:
+    get:
+      operationId: getUserProducts
+      tags: [users]
+      summary: Get current user's purchased products
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of user products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  # ─── Courses (public) ────────────────────────────────────
+  /courses:
+    get:
+      operationId: getCourses
+      tags: [courses]
+      summary: List all published courses
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+
+  /courses/{id}:
+    get:
+      operationId: getCourseById
+      tags: [courses]
+      summary: Get a course with FAQs
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Products (public) ───────────────────────────────────
+  /products:
+    get:
+      operationId: getProducts
+      tags: [products]
+      summary: List all published products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    get:
+      operationId: getProductById
+      tags: [products]
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Channel (public) ────────────────────────────────────
+  /channel/posts:
+    get:
+      operationId: getChannelPosts
+      tags: [channel]
+      summary: List all channel posts (pinned first)
+      responses:
+        "200":
+          description: List of channel posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChannelPost"
+
+  /channel/posts/{id}/view:
+    post:
+      operationId: incrementChannelPostView
+      tags: [channel]
+      summary: Increment view count for a post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── Reels (public) ─────────────────────────────────────
+  /reels:
+    get:
+      operationId: getReels
+      tags: [reels]
+      summary: List all reels in order
+      responses:
+        "200":
+          description: List of reels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reel"
+
+  # ─── Upload ──────────────────────────────────────────────
+  /upload/image:
+    post:
+      operationId: uploadImage
+      tags: [admin]
+      summary: Upload an image file (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ImageUploadInput"
+      responses:
+        "200":
+          description: Uploaded image URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+        "400":
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /upload/video:
+    post:
+      operationId: uploadVideo
+      tags: [admin]
+      summary: Upload a video file (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/VideoUploadInput"
+      responses:
+        "200":
+          description: Uploaded video URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+        "400":
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Payment ─────────────────────────────────────────────
+  /payment/create:
+    post:
+      operationId: createPayment
+      tags: [payment]
+      summary: Create a Zarinpal payment request
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreateRequest"
+      responses:
+        "200":
+          description: Payment URL to redirect user to
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentCreateResponse"
+        "400":
+          description: Bad request (already purchased, invalid item)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Admin Auth ──────────────────────────────────────────
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginRequest"
+      responses:
+        "200":
+          description: Admin token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthTokenResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Admin Courses ───────────────────────────────────────
+  /admin/courses:
+    get:
+      operationId: adminGetCourses
+      tags: [admin]
+      summary: Admin - list all courses
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourseDetail"
+    post:
+      operationId: adminCreateCourse
+      tags: [admin]
+      summary: Admin - create course
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetail"
+
+  /admin/courses/{id}:
+    put:
+      operationId: adminUpdateCourse
+      tags: [admin]
+      summary: Admin - update course
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetail"
+    delete:
+      operationId: adminDeleteCourse
+      tags: [admin]
+      summary: Admin - delete course
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── Admin Products ──────────────────────────────────────
+  /admin/products:
+    get:
+      operationId: adminGetProducts
+      tags: [admin]
+      summary: Admin - list all products
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      operationId: adminCreateProduct
+      tags: [admin]
+      summary: Admin - create product
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /admin/products/{id}:
+    put:
+      operationId: adminUpdateProduct
+      tags: [admin]
+      summary: Admin - update product
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: adminDeleteProduct
+      tags: [admin]
+      summary: Admin - delete product
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── Admin Channel ───────────────────────────────────────
+  /admin/channel/posts:
+    get:
+      operationId: adminGetChannelPosts
+      tags: [admin]
+      summary: Admin - list all channel posts
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All channel posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChannelPost"
+    post:
+      operationId: adminCreateChannelPost
+      tags: [admin]
+      summary: Admin - create channel post
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChannelPostInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelPost"
+
+  /admin/channel/posts/{id}:
+    put:
+      operationId: adminUpdateChannelPost
+      tags: [admin]
+      summary: Admin - update channel post
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChannelPostInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelPost"
+    delete:
+      operationId: adminDeleteChannelPost
+      tags: [admin]
+      summary: Admin - delete channel post
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/channel/posts/{id}/pin:
+    patch:
+      operationId: adminPinChannelPost
+      tags: [admin]
+      summary: Admin - pin/unpin channel post
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChannelPostPinInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelPost"
+
+  # ─── Admin Reels ─────────────────────────────────────────
+  /admin/reels:
+    get:
+      operationId: adminGetReels
+      tags: [admin]
+      summary: Admin - list all reels
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All reels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reel"
+    post:
+      operationId: adminCreateReel
+      tags: [admin]
+      summary: Admin - create reel
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReelInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reel"
+
+  /admin/reels/{id}:
+    put:
+      operationId: adminUpdateReel
+      tags: [admin]
+      summary: Admin - update reel
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReelInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reel"
+    delete:
+      operationId: adminDeleteReel
+      tags: [admin]
+      summary: Admin - delete reel
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── Admin Users ─────────────────────────────────────────
+  /admin/users:
+    get:
+      operationId: adminGetUsers
+      tags: [admin]
+      summary: Admin - list all users
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserWithAccess"
+
+  /admin/users/{userId}:
+    put:
+      operationId: adminUpdateUser
+      tags: [admin]
+      summary: Admin - update user (name, block status)
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      operationId: adminDeleteUser
+      tags: [admin]
+      summary: Admin - delete user and all access records
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Admin Orders ────────────────────────────────────────
+  /admin/orders:
+    get:
+      operationId: adminGetOrders
+      tags: [admin]
+      summary: Admin - list all orders
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: All orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  # ─── Admin Settings ──────────────────────────────────────
+  /admin/settings:
+    get:
+      operationId: adminGetSettings
+      tags: [admin]
+      summary: Admin - get site settings
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: Site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    put:
+      operationId: adminUpdateSettings
+      tags: [admin]
+      summary: Admin - update site settings
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettings"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+
+  # ─── Admin Chatbot Knowledge ─────────────────────────────
+  /admin/chatbot-knowledge:
+    get:
+      operationId: adminGetChatbotKnowledge
+      tags: [admin]
+      summary: Admin - list chatbot knowledge base
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: Knowledge items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatbotKnowledge"
+    post:
+      operationId: adminCreateChatbotKnowledge
+      tags: [admin]
+      summary: Admin - add chatbot knowledge item
+      security:
+        - adminAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatbotKnowledgeInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatbotKnowledge"
+
+  /admin/chatbot-knowledge/{id}:
+    put:
+      operationId: adminUpdateChatbotKnowledge
+      tags: [admin]
+      summary: Admin - update chatbot knowledge item
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatbotKnowledgeInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatbotKnowledge"
+    delete:
+      operationId: adminDeleteChatbotKnowledge
+      tags: [admin]
+      summary: Admin - delete chatbot knowledge item
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── Admin Grant Access ──────────────────────────────────
+  /admin/users/{userId}/grant-course/{courseId}:
+    post:
+      operationId: adminGrantCourseAccess
+      tags: [admin]
+      summary: Admin - manually grant course access to user
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Access granted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /admin/users/{userId}/grant-product/{productId}:
+    post:
+      operationId: adminGrantProductAccess
+      tags: [admin]
+      summary: Admin - manually grant product access to user
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Access granted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ─── AI Chat ─────────────────────────────────────────────
+  /ai-chat/proactive-ai:
+    get:
+      operationId: getAiChatProactiveAi
+      tags: [admin]
+      summary: Generate an AI-powered proactive chat message for the current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Generated proactive message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProactiveAiMessage"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ─── Site Settings (public) ──────────────────────────────
+  /settings:
+    get:
+      operationId: getSiteSettings
+      tags: [admin]
+      summary: Get public site settings (theme, logo, etc)
+      responses:
+        "200":
+          description: Public site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+
+  /openai/conversations:
+    get:
+      operationId: listOpenaiConversations
+      tags: [openai]
+      summary: List all conversations
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OpenaiConversation"
+    post:
+      operationId: createOpenaiConversation
+      tags: [openai]
+      summary: Create a new conversation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenaiConversationInput"
+      responses:
+        "201":
+          description: Created conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiConversation"
+  /openai/conversations/{id}:
+    get:
+      operationId: getOpenaiConversation
+      tags: [openai]
+      summary: Get conversation with messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiConversationWithMessages"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiError"
+    delete:
+      operationId: deleteOpenaiConversation
+      tags: [openai]
+      summary: Delete a conversation
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenaiError"
+  /openai/conversations/{id}/messages:
+    get:
+      operationId: listOpenaiMessages
+      tags: [openai]
+      summary: List messages in a conversation
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OpenaiMessage"
+    post:
+      operationId: sendOpenaiMessage
+      tags: [openai]
+      summary: Send a text message and receive a streaming text response
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenaiMessageInput"
+      responses:
+        "200":
+          description: SSE stream of assistant text chunks
+          content:
+            text/event-stream: {}
+  /openai/conversations/{id}/voice-messages:
+    post:
+      operationId: sendOpenaiVoiceMessage
+      tags: [openai]
+      summary: Send audio and receive a streaming voice response
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenaiVoiceMessageInput"
+      responses:
+        "200":
+          description: SSE stream of transcript and audio chunks
+          content:
+            text/event-stream: {}
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    adminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ProactiveAiMessage:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Personalized message with {اسم} placeholder already replaced
+        template:
+          type: string
+          description: Raw template before placeholder substitution
+      required:
+        - content
+        - template
+
+    UploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+      required:
+        - url
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    RecommendationTargetType:
+      type: string
+      enum:
+        - Product
+        - Course
+        - Tool
+        - Next Test
+        - Next Action
+
+    Recommendation:
+      type: object
+      properties:
+        targetType:
+          $ref: "#/components/schemas/RecommendationTargetType"
+        targetId:
+          oneOf:
+            - type: integer
+            - type: string
+          nullable: true
+        targetSlug:
+          type: string
+          nullable: true
+        priority:
+          type: number
+        reason:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        ctaLabel:
+          type: string
+          nullable: true
+        ctaUrl:
+          type: string
+          nullable: true
+        ctaRoute:
+          type: string
+          nullable: true
+        sourceRuleId:
+          type: integer
+        sourceRuleName:
+          type: string
+      required:
+        - targetType
+        - priority
+        - sourceRuleId
+        - sourceRuleName
+
+    AssessmentRecommendationsResponse:
+      type: object
+      properties:
+        sessionId:
+          type: integer
+        assessmentId:
+          type: integer
+        recommendations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Recommendation"
+      required:
+        - sessionId
+        - assessmentId
+        - recommendations
+
+    ProfessionalReportConfigPublic:
+      type: object
+      properties:
+        assessmentId: { type: integer }
+        isEnabled: { type: boolean }
+        title: { type: string }
+        salesDescription: { type: string }
+        valueDescription: { type: string }
+        features:
+          type: array
+          items: { type: string }
+        price: { type: integer }
+      required: [assessmentId, isEnabled, title, salesDescription, valueDescription, features, price]
+
+    ProfessionalReportConfig:
+      allOf:
+        - $ref: "#/components/schemas/ProfessionalReportConfigPublic"
+        - type: object
+          properties:
+            prompt: { type: string }
+            model: { type: string }
+            maxTokens: { type: integer }
+            temperature: { type: number }
+            tone: { type: string }
+            language: { type: string }
+            promptVersion: { type: string }
+            source: { type: string, enum: [config, legacy] }
+          required: [prompt, model, maxTokens, temperature, tone, language, promptVersion, source]
+
+    ProfessionalReportConfigInput:
+      type: object
+      properties:
+        isEnabled: { type: boolean }
+        title: { type: string }
+        salesDescription: { type: string }
+        valueDescription: { type: string }
+        features:
+          type: array
+          items: { type: string }
+        price: { type: integer, minimum: 0 }
+        prompt: { type: string }
+        model: { type: string }
+        maxTokens: { type: integer, minimum: 1 }
+        temperature: { type: number, minimum: 0, maximum: 2 }
+        tone: { type: string }
+        language: { type: string }
+        promptVersion: { type: string }
+      required: [isEnabled]
+
+    ProfessionalReportContent:
+      type: object
+      properties:
+        summary: { type: string }
+        strengths:
+          type: array
+          items: { type: string }
+        improvements:
+          type: array
+          items: { type: string }
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              title: { type: string }
+              description: { type: string }
+            required: [title, description]
+        roadmap:
+          type: array
+          items:
+            type: object
+            properties:
+              title: { type: string }
+              description: { type: string }
+            required: [title, description]
+        closing: { type: string }
+      required: [summary, strengths, improvements, recommendations, roadmap, closing]
+
+    ProfessionalReportPreviewResponse:
+      type: object
+      properties:
+        sessionId: { type: integer }
+        assessmentId: { type: integer }
+        config:
+          $ref: "#/components/schemas/ProfessionalReportConfigPublic"
+        preview:
+          $ref: "#/components/schemas/ProfessionalReportContent"
+      required: [sessionId, assessmentId, config, preview]
+
+    ProfessionalReportRecord:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: integer, nullable: true }
+        assessmentId: { type: integer }
+        attemptId: { type: integer }
+        paymentId: { type: integer, nullable: true }
+        status: { type: string }
+        model: { type: string }
+        promptVersion: { type: string }
+        generatedContent:
+          allOf:
+            - $ref: "#/components/schemas/ProfessionalReportContent"
+          nullable: true
+        tokenUsage:
+          type: object
+          nullable: true
+          additionalProperties: { type: integer }
+        estimatedCost: { type: number, nullable: true }
+        createdAt: { type: string, format: date-time }
+        completedAt: { type: string, format: date-time, nullable: true }
+        error: { type: string, nullable: true }
+      required: [id, assessmentId, attemptId, status, model, promptVersion, createdAt]
+
+    ProfessionalReportPromptResponse:
+      type: object
+      properties:
+        sessionId: { type: integer }
+        config:
+          $ref: "#/components/schemas/ProfessionalReportConfig"
+        input:
+          type: object
+          additionalProperties: true
+        prompt:
+          type: object
+          properties:
+            system: { type: string }
+            user: { type: string }
+            promptVersion: { type: string }
+            model: { type: string }
+            maxTokens: { type: integer }
+            temperature: { type: number }
+          required: [system, user, promptVersion, model, maxTokens, temperature]
+        preview:
+          $ref: "#/components/schemas/ProfessionalReportContent"
+      required: [sessionId, config, input, prompt, preview]
+
+    ProfessionalReportPromptInput:
+      type: object
+      properties:
+        sessionId: { type: integer }
+      required: [sessionId]
+
+    GrowthRoadmap:
+      type: object
+      description: Dynamic growth roadmap generated from the completed assessment result.
+      properties:
+        priorities:
+          type: array
+          items:
+            type: object
+            properties:
+              rank: { type: integer }
+              indexId: { type: integer, nullable: true }
+              title: { type: string }
+              score: { type: integer, nullable: true }
+              gap: { type: integer }
+              reason: { type: string }
+            required: [rank, indexId, title, score, gap, reason]
+        suggestedSteps:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              priorityRank: { type: integer }
+              title: { type: string }
+              description: { type: string }
+              indexId: { type: integer, nullable: true }
+              source: { type: string, enum: [assessment, recommendation] }
+              targetType: { type: string, nullable: true }
+              targetId: { nullable: true }
+              targetSlug: { type: string, nullable: true }
+              ctaLabel: { type: string, nullable: true }
+              ctaUrl: { type: string, nullable: true }
+              ctaRoute: { type: string, nullable: true }
+            required: [id, priorityRank, title, description, indexId, source]
+        weeklyPlan:
+          type: array
+          items:
+            type: object
+            properties:
+              week: { type: integer }
+              title: { type: string }
+              focus: { type: string }
+              actions:
+                type: array
+                items: { type: string }
+              expectedOutcome: { type: string }
+            required: [week, title, focus, actions, expectedOutcome]
+        nextAction:
+          type: object
+          properties:
+            title: { type: string }
+            description: { type: string }
+            priorityRank: { type: integer }
+            indexId: { type: integer, nullable: true }
+            ctaLabel: { type: string }
+          required: [title, description, priorityRank, indexId, ctaLabel]
+        checklist:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              label: { type: string }
+              priorityRank: { type: integer }
+              indexId: { type: integer, nullable: true }
+            required: [id, label, priorityRank, indexId]
+      required: [priorities, suggestedSteps, weeklyPlan, nextAction, checklist]
+
+    SendOtpRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Iranian mobile number (e.g. 09123456789)
+      required:
+        - phone
+
+    VerifyOtpRequest:
+      type: object
+      properties:
+        phone:
+          type: string
+        code:
+          type: string
+      required:
+        - phone
+        - code
+
+    AuthTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - token
+        - user
+
+    AdminLoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    AdminInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+      required:
+        - id
+        - username
+
+    AdminAuthTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        admin:
+          $ref: "#/components/schemas/AdminInfo"
+      required:
+        - token
+        - admin
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        phone:
+          type: string
+        name:
+          type: string
+          nullable: true
+        avatar:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        hasPassword:
+          type: boolean
+      required:
+        - id
+        - phone
+        - createdAt
+
+    UserWithAccess:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            courseIds:
+              type: array
+              items:
+                type: integer
+            productIds:
+              type: array
+              items:
+                type: integer
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        avatar:
+          type: string
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        thumbnail:
+          type: string
+          nullable: true
+        price:
+          type: integer
+        results:
+          type: array
+          items:
+            type: string
+          nullable: true
+        audioUrl:
+          type: string
+          nullable: true
+        isPhased:
+          type: boolean
+        isPublished:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - price
+        - isPublished
+        - isPhased
+        - createdAt
+        - updatedAt
+
+    CoursePhase:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          type: integer
+        title:
+          type: string
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - courseId
+        - title
+        - order
+        - createdAt
+
+    LessonAttachment:
+      type: object
+      properties:
+        id:
+          type: integer
+        lessonId:
+          type: integer
+        title:
+          type: string
+          nullable: true
+        fileUrl:
+          type: string
+        fileType:
+          type: string
+          nullable: true
+        fileName:
+          type: string
+          nullable: true
+        fileSize:
+          type: integer
+          nullable: true
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - lessonId
+        - fileUrl
+        - order
+        - createdAt
+
+    CourseFaq:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          type: integer
+        question:
+          type: string
+        answer:
+          type: string
+        order:
+          type: integer
+      required:
+        - id
+        - courseId
+        - question
+        - answer
+        - order
+
+    CourseDetail:
+      allOf:
+        - $ref: "#/components/schemas/Course"
+        - type: object
+          properties:
+            faqs:
+              type: array
+              items:
+                $ref: "#/components/schemas/CourseFaq"
+            phases:
+              type: array
+              items:
+                $ref: "#/components/schemas/CoursePhase"
+
+    CourseInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        price:
+          type: integer
+        results:
+          type: array
+          items:
+            type: string
+          nullable: true
+        isPublished:
+          type: boolean
+        faqs:
+          type: array
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+              answer:
+                type: string
+              order:
+                type: integer
+            required:
+              - question
+              - answer
+      required:
+        - title
+        - price
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        audioUrl:
+          type: string
+          nullable: true
+        price:
+          type: integer
+        categoryId:
+          type: integer
+          nullable: true
+        productType:
+          type: string
+        isPublished:
+          type: boolean
+        files:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              name:
+                type: string
+              size:
+                type: integer
+                nullable: true
+              fileType:
+                type: string
+                nullable: true
+              title:
+                type: string
+                nullable: true
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - price
+        - productType
+        - isPublished
+        - createdAt
+        - updatedAt
+
+    ProductInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        price:
+          type: integer
+        isPublished:
+          type: boolean
+      required:
+        - title
+        - price
+
+    Reel:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+        order:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - videoUrl
+        - order
+        - createdAt
+
+    ReelInput:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+        order:
+          type: integer
+      required:
+        - videoUrl
+
+    PaymentCreateRequest:
+      type: object
+      properties:
+        itemType:
+          type: string
+          enum: [course, product]
+        itemId:
+          type: integer
+      required:
+        - itemType
+        - itemId
+
+    PaymentCreateResponse:
+      type: object
+      properties:
+        paymentUrl:
+          type: string
+        orderId:
+          type: integer
+      required:
+        - paymentUrl
+        - orderId
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        itemType:
+          type: string
+        itemId:
+          type: integer
+        amount:
+          type: integer
+        status:
+          type: string
+        transactionId:
+          type: string
+          nullable: true
+        zarinpalAuthority:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - itemType
+        - itemId
+        - amount
+        - status
+        - createdAt
+        - updatedAt
+
+    SiteSettings:
+      type: object
+      properties:
+        siteName:
+          type: string
+          nullable: true
+        logoUrl:
+          type: string
+          nullable: true
+        primaryColor:
+          type: string
+          nullable: true
+        heroTitle:
+          type: string
+          nullable: true
+        heroSubtitle:
+          type: string
+          nullable: true
+        aboutText:
+          type: string
+          nullable: true
+        footerText:
+          type: string
+          nullable: true
+        bannerImageUrl:
+          type: string
+          nullable: true
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        courseId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        audioUrl:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+          nullable: true
+        duration:
+          type: integer
+          nullable: true
+        phaseId:
+          type: integer
+          nullable: true
+        order:
+          type: integer
+        isFree:
+          type: boolean
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/LessonAttachment"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - courseId
+        - title
+        - order
+        - isFree
+        - createdAt
+
+    LessonInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        videoUrl:
+          type: string
+          nullable: true
+        duration:
+          type: integer
+          nullable: true
+        order:
+          type: integer
+        isFree:
+          type: boolean
+      required:
+        - title
+
+    ChatbotKnowledge:
+      type: object
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        question:
+          type: string
+        answer:
+          type: string
+        courseId:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - category
+        - question
+        - answer
+        - createdAt
+        - updatedAt
+
+    ChatbotKnowledgeInput:
+      type: object
+      properties:
+        category:
+          type: string
+        question:
+          type: string
+        answer:
+          type: string
+        courseId:
+          type: string
+          nullable: true
+      required:
+        - category
+        - question
+        - answer
+
+    ChannelPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        mediaUrl:
+          type: string
+          nullable: true
+        mediaType:
+          type: string
+          nullable: true
+        isPinned:
+          type: boolean
+        viewCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - content
+        - isPinned
+        - viewCount
+        - createdAt
+
+    ChannelPostInput:
+      type: object
+      properties:
+        content:
+          type: string
+        mediaUrl:
+          type: string
+          nullable: true
+        mediaType:
+          type: string
+          nullable: true
+        isPinned:
+          type: boolean
+      required:
+        - content
+
+    OpenaiConversation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - createdAt
+    OpenaiMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        conversationId:
+          type: integer
+        role:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - conversationId
+        - role
+        - content
+        - createdAt
+    OpenaiConversationInput:
+      type: object
+      properties:
+        title:
+          type: string
+      required:
+        - title
+    OpenaiMessageInput:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+    OpenaiVoiceMessageInput:
+      type: object
+      properties:
+        audio:
+          type: string
+          description: Base64-encoded audio data
+      required:
+        - audio
+    OpenaiConversationWithMessages:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpenaiMessage"
+      required:
+        - id
+        - title
+        - createdAt
+        - messages
+    OpenaiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    ImageUploadInput:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Image file to upload
+      required:
+        - file
+
+    VideoUploadInput:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: Video file to upload
+      required:
+        - file
+
+    AdminUserUpdate:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+
+    ChannelPostPinInput:
+      type: object
+      properties:
+        isPinned:
+          type: boolean
+      required:
+        - isPinned
